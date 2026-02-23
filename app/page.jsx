@@ -107,49 +107,49 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-2xl">
-        <div className="absolute top-4 right-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open("https://github.com/geronimi73/next-voice", "_blank")}
-          >
-            <Github className="w-4 h-4 mr-2" />
-            View on GitHub
-          </Button>
-        </div>
         <CardHeader>
-          <CardTitle>
-            <div className="flex flex-col gap-2">
-              <p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-2 min-w-0">
+              <CardTitle className="text-base sm:text-xl leading-snug">
                 Clientside TTS with onnxruntime-web and Kitten TTS V0.8
-              </p>
-              <p className={cn("flex gap-1 items-center", device || isLoading || isError ? "visible" : "invisible")}>
+              </CardTitle>
+              <p className={cn("flex gap-1 items-center text-sm font-normal", device || isLoading || isError ? "visible" : "invisible")}>
                 { isError
-                  ? <OctagonX color="red"/>
-                  : <Fan color="#000" className="w-6 h-6 animate-[spin_2.5s_linear_infinite] direction-reverse" />
+                  ? <OctagonX className="w-4 h-4 shrink-0" color="red"/>
+                  : <Fan color="#000" className="w-4 h-4 shrink-0 animate-[spin_2.5s_linear_infinite] direction-reverse" />
                 }
-                { isLoading && status ? status : 
+                { isLoading && status ? status :
                   device ? "Running on " + device : ""
                 }
               </p>
             </div>
-          </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0"
+              onClick={() => window.open("https://github.com/geronimi73/next-voice", "_blank")}
+            >
+              <Github className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">View on GitHub</span>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <div className="flex justify-center gap-2">
+            <div className="flex gap-2">
               <Input
+                className="min-w-0"
                 onChange={(e) => setText(e.target.value)}
                 value={text}
                 placeholder="Enter text to synthesize..."
                 onKeyDown={(e) => { if (e.key === 'Enter') processText() }}
               />
-              <Button onClick={processText} disabled={isLoading} className="whitespace-nowrap">
-                {isLoading 
-                  ? <LoaderCircle className="w-4 h-4 mr-2 animate-spin" />
-                  :  <Play className="w-4 h-4 mr-2" />
+              <Button onClick={processText} disabled={isLoading} className="whitespace-nowrap shrink-0">
+                {isLoading
+                  ? <LoaderCircle className="w-4 h-4 sm:mr-2 animate-spin" />
+                  : <Play className="w-4 h-4 sm:mr-2" />
                 }
-                  Generate
+                <span className="hidden sm:inline">Generate</span>
               </Button>
             </div>
 
