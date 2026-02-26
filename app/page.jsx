@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +44,7 @@ export default function Home() {
   const [isError, setError] = useState(false);
   const [status, setStatus] = useState("");
   const [audioUrl, setAudioUrl] = useState(null);
+  const audioRef = useRef(null);
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
   // Inputs
@@ -106,6 +107,13 @@ export default function Home() {
     return () => {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
     };
+  }, [audioUrl]);
+
+  // Autoplay: explicit .play() is more reliable than the autoPlay attribute on mobile
+  useEffect(() => {
+    if (audioUrl && audioRef.current) {
+      audioRef.current.play().catch(() => { /* blocked — controls let user play manually */ });
+    }
   }, [audioUrl]);
 
   return (
@@ -207,7 +215,7 @@ export default function Home() {
               </div>
             </div>
             { audioUrl &&
-              <audio key={audioUrl} src={audioUrl} controls autoPlay className="w-full mt-2" />
+              <audio ref={audioRef} key={audioUrl} src={audioUrl} controls className="w-full mt-2" />
             }
           </div>
         </CardContent>
