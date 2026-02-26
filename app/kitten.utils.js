@@ -136,9 +136,10 @@ export async function downloadWithProgress(url, onProgress) {
   // repos (e.g. voices.npz for nano vs mini) don't collide in OPFS.
   const cacheKey = url.replace(/https?:\/\//, '').replace(/[^a-z0-9._-]/gi, '_');
 
+  const opfsRoot = await navigator.storage.getDirectory();
+
   // Return from OPFS cache if available
   try {
-    const opfsRoot = await navigator.storage.getDirectory();
     const fileHandle = await opfsRoot.getFileHandle(cacheKey, { create: false });
     const file = await fileHandle.getFile();
     return await file.arrayBuffer();
@@ -165,11 +166,20 @@ export async function downloadWithProgress(url, onProgress) {
 
   // Write to OPFS cache
   try {
-    const opfsRoot = await navigator.storage.getDirectory();
     const fileHandle = await opfsRoot.getFileHandle(cacheKey, { create: true });
-    const writable = await fileHandle.createWritable();
-    await writable.write(data);
-    await writable.close();
+    
+    if (typeof fileHandle.createWritable === 'function') {
+      // Chrome / Firefox
+      const writable = await fileHandle.createWritable();
+      await writable.write(data);
+      await writable.close();
+    } else {
+      // Safari: use synchronous access handle (only available in workers, which we are)
+      const accessHandle = await fileHandle.createSyncAccessHandle();
+      accessHandle.write(data, { at: 0 });
+      accessHandle.flush();
+      accessHandle.close();
+    }
   } catch (e) {
     console.warn('OPFS cache write failed:', e);
   }
