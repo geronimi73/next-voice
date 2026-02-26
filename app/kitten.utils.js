@@ -161,7 +161,8 @@ export async function downloadWithProgress(url, onProgress) {
   try {
     const fileHandle = await opfsRoot.getFileHandle(cacheKey, { create: false });
     const file = await fileHandle.getFile();
-    return await file.arrayBuffer();
+    if (file.size > 0)
+      return await file.arrayBuffer();
   } catch { /* not cached yet */ }
 
   // Download with progress
