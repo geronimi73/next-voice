@@ -1,4 +1,22 @@
-import { phonemize } from 'phonemizer';
+
+// Safari polyfill: ReadableStream async iterator (pending https://github.com/xenova/phonemizer.js/pull/4)
+// Must live here so it runs before phonemizer is dynamically imported in processText.
+if (typeof ReadableStream !== 'undefined' && !ReadableStream.prototype[Symbol.asyncIterator]) {
+  ReadableStream.prototype[Symbol.asyncIterator] = async function* () {
+    const reader = this.getReader();
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+}
+
+const { phonemize } = await import('phonemizer');
 
 // ── Text Processing ───────────────────────────────────────────────────────────
 const _pad = "$";
@@ -35,6 +53,7 @@ export function tokenizePhonemes(text) {
 }
 
 export async function processText(text) {
+  console.log("process")
   text = cleanText(text);
   const phonemes = (await phonemize(text)).join('');
   const tokens = tokenizePhonemes(phonemes);
