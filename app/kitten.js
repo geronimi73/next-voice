@@ -37,7 +37,6 @@ function sendJob(type, payload = {}) {
   return new Promise((resolve, reject) => {
     // const id = _nextId++;
     const jobId = `${type}-${_nextId++}`
-    console.log("Sending job", jobId)
 
     _pendingJobs[jobId] = { resolve, reject };
     getWorker().postMessage({ id: jobId, type, payload });
