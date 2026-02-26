@@ -40,6 +40,7 @@ export default function Home() {
   // UI state
   const [device, setDevice] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [isError, setError] = useState(false);
   const [status, setStatus] = useState("");
   const [audioUrl, setAudioUrl] = useState(null);
@@ -58,15 +59,18 @@ export default function Home() {
     setLoading(true);
     setError(false);
     setStatus("Loading model..");
-    
+    setProgressCallback(setProgress)
+
     loadModel(url)
       .then((_dev) => {
         setDevice(_dev);
         setLoading(false);
+        setProgress(null)
       })
       .catch((error) => {
         setError(true);
         setStatus(error.message);
+        setProgress(null)
       });
   }
 
@@ -118,7 +122,9 @@ export default function Home() {
                   ? <OctagonX className="w-4 h-4 shrink-0" color="red"/>
                   : <Fan color="#000" className="w-4 h-4 shrink-0 animate-[spin_2.5s_linear_infinite] direction-reverse" />
                 }
-                { isLoading && status ? status :
+                { 
+                  isLoading && status && progress ? `${status} ${(progress*100).toFixed(0)}%`:
+                  isLoading && status ? status :
                   device ? "Running on " + device : ""
                 }
               </p>

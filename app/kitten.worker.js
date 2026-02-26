@@ -69,7 +69,7 @@ async function getSession(url) {
   _device = null;
 
   const buffer = await downloadWithProgress(url, (loaded, total) => {
-    self.postMessage({ type: 'progress', payload: { loaded, total } });
+    self.postMessage({ type: 'progress', payload: loaded / total });
   });
 
   for (let device of [
