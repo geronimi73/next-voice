@@ -12,8 +12,7 @@ Demo at [next-voice.vercel.app](https://next-voice.vercel.app/)
 Probably Many. 
 
 It definitely breaks with:
- * Safari
- * Mobile Chrome
+ * ~~Safari, Mobile Chrome~~ fixed
  * WebGPU (currently wasm backend only)
 
 Any idea what's going on? Open a PR!
