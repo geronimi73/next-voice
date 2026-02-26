@@ -73,14 +73,18 @@ async function getSession(url) {
   });
 
   for (let device of [
-    // "webgpu",   // doesnt work
+    // webgpu works but output is messed up (NaNs?)
+    // {
+    //   name: 'webgpu',
+    //   preferredLayout: 'NCHW',
+    // },
     "wasm"
   ]) {
     try {
       _session = await ort.InferenceSession.create(buffer, {
         executionProviders: [device],
       });
-      _device = device;
+      _device = device?.name ? device?.name : device;
 
       return _session
     }
