@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
-import { LoaderCircle, Github, Fan, Play, OctagonX, ChevronRight } from "lucide-react";
+import { LoaderCircle, Fan, Play, OctagonX, ChevronRight } from "lucide-react";
+import HeaderLinks from "@/components/ui/header-links.jsx";
 
 import { tts, loadModel, setProgressCallback } from "./kitten.js";
 
@@ -119,34 +120,51 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-2xl">
+        <HeaderLinks
+          githubUrl="https://github.com/geronimi73/next-voice"
+          blogUrl="https://medium.com/@geronimo7"
+        />
         <CardHeader>
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex flex-col gap-2 min-w-0">
-              <CardTitle className="text-base sm:text-xl leading-snug">
-                Clientside TTS with onnxruntime-web and Kitten TTS V0.8
-              </CardTitle>
-              <p className={cn("flex gap-1 items-center text-sm font-normal", device || isLoading || isError ? "visible" : "invisible")}>
-                { isError
-                  ? <OctagonX className="w-4 h-4 shrink-0" color="red"/>
-                  : <Fan color="#000" className="w-4 h-4 shrink-0 animate-[spin_2.5s_linear_infinite] direction-reverse" />
-                }
-                { 
-                  isLoading && status && progress ? `${status} ${(progress*100).toFixed(0)}%`:
-                  isLoading && status ? status :
-                  device ? "Running on " + device : ""
-                }
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="shrink-0"
-              onClick={() => window.open("https://github.com/geronimi73/next-voice", "_blank")}
-            >
-              <Github className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">View on GitHub</span>
-            </Button>
-          </div>
+          <CardTitle className="text-base sm:text-xl leading-snug">
+            Clientside TTS with onnxruntime-web and Kitten TTS V0.8
+          </CardTitle>
+          <p className={cn("flex gap-1 items-center text-sm font-normal", device || isLoading || isError ? "visible" : "invisible")}>
+            { isError
+              ? <OctagonX className="w-4 h-4 shrink-0" color="red"/>
+              : <Fan color="#000" className="w-4 h-4 shrink-0 animate-[spin_2.5s_linear_infinite] direction-reverse" />
+            }
+            {
+              isLoading && status && progress ? `${status} ${(progress*100).toFixed(0)}%`:
+              isLoading && status ? status :
+              device ? "Running on " + device : ""
+            }
+          </p>
+          <CardDescription className="text-sm text-muted-foreground space-y-1 pt-1">
+            <p>
+              Turn text into natural-sounding speech — entirely in your browser, nothing is uploaded to a server.
+              The model runs locally using{" "}
+              <a
+                href="https://onnxruntime.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground"
+              >
+                ONNX Runtime Web
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://huggingface.co/KittenML"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground"
+              >
+                Kitten TTS
+              </a>.
+            </p>
+            <p>
+              <strong>How to use:</strong> Type your text → click <em>Generate</em> → audio plays automatically. Use <em>Advanced</em> to switch models, change voice, or adjust speed.
+            </p>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
