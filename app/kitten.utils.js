@@ -30,7 +30,18 @@ for (let i = 0; i < symbols.length; i++) {
   wordIndexDictionary[symbols[i]] = i;
 }
 
-export function cleanText(text) {
+function ensurePunctuation(text) {
+  text = text.trim();
+  if (!text) {
+      return text;
+  }
+  if (!['.', '!', '?', ',', ';', ':'].includes(text.slice(-1))) {
+      text = text + ',';
+  }
+  return text;
+}
+
+function cleanText(text) {
   const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]/gu;
   return text
     .replace(emojiRegex, '')
@@ -42,7 +53,7 @@ export function cleanText(text) {
     .trim();
 }
 
-export function tokenizePhonemes(text) {
+function tokenizePhonemes(text) {
   const indexes = [];
   for (const char of text) {
     if (wordIndexDictionary[char] !== undefined) {
@@ -55,10 +66,15 @@ export function tokenizePhonemes(text) {
 export async function processText(text) {
   console.log("process")
   text = cleanText(text);
-  const phonemes = (await phonemize(text)).join('');
+
+  let phonemes = (await phonemize(text)).join('');
+  // Sounds weird otherwise
+  phonemes = ensurePunctuation(phonemes)
+
   const tokens = tokenizePhonemes(phonemes);
   tokens.unshift(0);
   tokens.push(0);
+  
   return tokens;
 }
 
